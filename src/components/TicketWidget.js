@@ -2,16 +2,20 @@ import React from 'react';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import { SeatContext } from './SeatContext';
+import { Seat } from './Seat';
+
 import { getRowName, getSeatNum } from '../helpers';
 import { range } from '../utils';
 
 const TicketWidget = () => {
-  // TODO: use values from Context
-  const numOfRows = 6;
-  const seatsPerRow = 6;
+  const {
+    state: { numOfRows, seatsPerRow, seats, hasLoaded },
+  } = React.useContext(SeatContext);
 
-  // TODO: implement the loading spinner <CircularProgress />
-  // with the hasLoaded flag
+  // if (!hasLoaded) {
+  //   return <CircularProgress />;
+  // }
 
   return (
     <Wrapper>
@@ -23,10 +27,18 @@ const TicketWidget = () => {
             <RowLabel>Row {rowName}</RowLabel>
             {range(seatsPerRow).map(seatIndex => {
               const seatId = `${rowName}-${getSeatNum(seatIndex)}`;
+              const seat = seats[seatId];
 
               return (
                 <SeatWrapper key={seatId}>
-                  {/* TODO: Render the actual <Seat /> */}
+                  <Seat 
+                    rowIndex={rowIndex}
+                    seatIndex={seatIndex}
+                    width={36}
+                    height={36}
+                    price={seat.price}
+                    status={seat.isBooked ? 'unavailable' : 'available'}
+                  />
                 </SeatWrapper>
               );
             })}
